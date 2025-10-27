@@ -205,3 +205,50 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# CUDA-specific
+# Object files
+*.o
+*.cu.o
+*.obj
+*.dlink.o
+
+# Executables
+*.exe
+*.out
+*.app
+*.lib
+*.a
+*.so
+
+# Build directories
+build/
+cmake-build-*/
+CMakeFiles/
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Large data files
+*.bin
+*.dat
+*.h5
+*.ckpt
+*.pth
+*.pb
+
+# Logs and profiling
+*.log
+*.prof
+*.csv
+nsight_results/
