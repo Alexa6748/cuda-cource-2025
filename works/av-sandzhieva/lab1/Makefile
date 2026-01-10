@@ -6,7 +6,7 @@ TARGET = circle
 all: $(TARGET)
 
 $(TARGET): src/main.cu
-	$(NVCC) $(CFLAGS) -o $(TARGET) $^
+	$(NVCC) $(CFLAGS) src/main.cu -o $(TARGET)
 
 clean:
 	rm -f $(TARGET) *.o
