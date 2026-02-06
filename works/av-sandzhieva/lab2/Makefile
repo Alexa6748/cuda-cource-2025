@@ -1,14 +1,14 @@
 NVCC = nvcc
-CFLAGS = 
+CFLAGS = -O2 -arch=sm_70 -I../include
 
-TARGET = <...>
+TARGET = program
 
 all: $(TARGET)
 
-$(TARGET): 
+$(TARGET): src/main.cu src/cpu_matrix_mult.cpp src/gpu_matrix_mult.cu
+	$(NVCC) $(CFLAGS) -o $(TARGET) $^
 
 clean:
 	rm -f $(TARGET) *.o
 
-.PH
-
+.PHONY: all clean
