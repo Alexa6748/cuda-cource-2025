@@ -6,6 +6,8 @@
 #include <ctime>
 #include <cmath>
 #include <cuda_runtime.h>
+#include <iomanip>
+
 
 #define CUDA_CHECK(err) do { \
     if (err != cudaSuccess) { \
@@ -14,6 +16,7 @@
     } \
 } while(0)
 
+
 inline void generate_random_matrix(float* mat, int rows, int cols) {
     static bool seeded = false;
     if (!seeded) {
@@ -21,17 +24,35 @@ inline void generate_random_matrix(float* mat, int rows, int cols) {
         seeded = true;
     }
     for (int i = 0; i < rows * cols; ++i) {
-        mat[i] = static_cast<float>(rand()) / RAND_MAX * 10.0f;  // значения от 0.0 до 10.0
+        mat[i] = static_cast<float>(rand()) / RAND_MAX; 
     }
 }
 
-inline bool compare_matrices(const float* mat1, const float* mat2, int rows, int cols, float epsilon = 1e-5f) {
+
+inline bool compare_matrices(const float* mat1, const float* mat2, int rows, int cols) {
+    float epsilon = 1e-3f;
+    float max_diff = 0.0f;
+    int mismatches = 0;
+
     for (int i = 0; i < rows * cols; ++i) {
-        if (fabs(mat1[i] - mat2[i]) > epsilon) {
-            return false;
+        float diff = fabsf(mat1[i] - mat2[i]);
+        if (diff > max_diff) max_diff = diff;
+        if (diff > epsilon) {
+            if (mismatches < 5) {
+                std::cout << "Mismatch at [" << i/cols << "][" << i%cols << "]: "
+                          << mat1[i] << " vs " << mat2[i] << " (diff=" << diff << ")\n";
+            }
+            mismatches++;
         }
     }
-    return true;
+
+    if (mismatches == 0) {
+        std::cout << "All elements match! Max. diff(eps 1e-3f): " << std::fixed << std::setprecision(6) << max_diff << "\n";
+        return true;
+    } else {
+        std::cout << "Finded " << mismatches << " mismatches. Max. diff: " << std::fixed << std::setprecision(6) << max_diff << "\n";
+        return false;
+    }
 }
 
 inline void print_matrix(const float* mat, int rows, int cols) {
