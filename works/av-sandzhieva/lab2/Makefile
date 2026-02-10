@@ -1,5 +1,5 @@
 NVCC = nvcc
-CFLAGS = -O2 -arch=sm_70 -I../include
+CFLAGS = -O2 -arch=sm_70 -I../include 
 
 TARGET = program
 
@@ -10,5 +10,3 @@ $(TARGET): src/main.cu src/cpu_matrix_mult.cpp src/gpu_matrix_mult.cu
 
 clean:
 	rm -f $(TARGET) *.o
-
-.PHONY: all clean
