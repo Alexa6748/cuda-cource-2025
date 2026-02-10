@@ -10,8 +10,6 @@
 #include "../include/utils.h"
 
 #define DEFAULT_SIZE 1024
-#define EPSILON 1e-5f
-
 
 int main(int argc, char** argv) {
     int M = DEFAULT_SIZE;
@@ -98,7 +96,7 @@ int main(int argc, char** argv) {
         CUDA_CHECK(cudaMemcpy(h_C_gpu, d_C, sizeC, cudaMemcpyDeviceToHost));
 
         if (mode == "all") {
-            if (compare_matrices(h_C_cpu, h_C_gpu, M, K, EPSILON)) {
+            if (compare_matrices(h_C_cpu, h_C_gpu, M, K)) {
                 std::cout << "Basic GPU results match CPU.\n";
             } else {
                 std::cout << "Basic GPU results do NOT match CPU.\n";
@@ -126,7 +124,7 @@ int main(int argc, char** argv) {
         CUDA_CHECK(cudaMemcpy(h_C_gpu, d_C, sizeC, cudaMemcpyDeviceToHost));
 
         if (mode == "all") {
-            if (compare_matrices(h_C_cpu, h_C_gpu, M, K, EPSILON)) {
+            if (compare_matrices(h_C_cpu, h_C_gpu, M, K)) {
                 std::cout << "Shared GPU results match CPU.\n";
             } else {
                 std::cout << "Shared GPU results do NOT match CPU.\n";
@@ -152,4 +150,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
