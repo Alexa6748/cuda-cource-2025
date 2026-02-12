@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     }
 
     if (mode == "gpu_basic" || mode == "all") {
-        dim3 threads_basic(32, 32);
+        dim3 threads_basic(16, 16);
         dim3 blocks_basic((K + threads_basic.x - 1) / threads_basic.x, (M + threads_basic.y - 1) / threads_basic.y);
 
         CUDA_CHECK(cudaEventRecord(start));
