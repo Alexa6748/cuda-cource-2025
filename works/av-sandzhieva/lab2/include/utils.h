@@ -17,7 +17,7 @@
 } while(0)
 
 
-inline void generate_random_matrix(float* mat, int rows, int cols) {
+void generate_random_matrix(float* mat, int rows, int cols) {
     static bool seeded = false;
     if (!seeded) {
         srand(static_cast<unsigned>(time(nullptr)));
@@ -29,7 +29,7 @@ inline void generate_random_matrix(float* mat, int rows, int cols) {
 }
 
 
-inline bool compare_matrices(const float* mat1, const float* mat2, int rows, int cols) {
+bool compare_matrices(const float* mat1, const float* mat2, int rows, int cols) {
     float epsilon = 1e-3f;
     float max_diff = 0.0f;
     int mismatches = 0;
@@ -55,7 +55,7 @@ inline bool compare_matrices(const float* mat1, const float* mat2, int rows, int
     }
 }
 
-inline void print_matrix(const float* mat, int rows, int cols) {
+void print_matrix(const float* mat, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
             std::cout << mat[i * cols + j] << " ";
