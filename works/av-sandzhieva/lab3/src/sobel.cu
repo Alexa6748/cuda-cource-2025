@@ -3,7 +3,7 @@
 
 __global__ void sobelFilter(unsigned char* input, unsigned char* output, int width, int height)
 {
-    __shared__ float shared_tile[TILE_SIZE][TILE_SIZE];
+    __shared__ float shared_tile[TILE_SIZE][TILE_SIZE+1];
 
     int tx = threadIdx.x;
     int ty = threadIdx.y;
