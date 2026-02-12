@@ -14,7 +14,7 @@ __global__ void gpu_matrix_multiply_basic(const float* A, const float* B, float*
 
 __global__ void gpu_matrix_multiply_shared(const float* A, const float* B, float* C, int M, int N, int K) {
     __shared__ float sA[TILE_SIZE][TILE_SIZE];
-    __shared__ float sB[TILE_SIZE][TILE_SIZE];
+    __shared__ float sB[TILE_SIZE][TILE_SIZE+1];
 
     int row = blockIdx.y * TILE_SIZE + threadIdx.y;
     int col = blockIdx.x * TILE_SIZE + threadIdx.x;
