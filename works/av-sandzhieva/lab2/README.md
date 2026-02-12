@@ -40,79 +40,24 @@ make clean
 ### Примеры работы программы
 
 #### Маленькие матрицы (4×4×4)
-```
-Matrix dimensions: A(4x4), B(4x4), C(4x4)
-Mode: all
-CPU time: 0.000001 seconds
-GPU basic time: 0.000140 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000000
-Basic GPU results match CPU.
-Basic GPU acceleration: 0.01x
-GPU shared time: 0.000028 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000000
-Shared GPU results match CPU.
-Shared GPU acceleration: 0.04x
-```
+<img width="899" height="326" alt="image" src="https://github.com/user-attachments/assets/a50f25a0-c1bd-4fed-af44-1a1b02c509fb" />
+
 
 #### Средние матрицы (100×200×300)
-```
-Matrix dimensions: A(100x200), B(200x300), C(100x300)
-Mode: all
-CPU time: 0.010305 seconds
-GPU basic time: 0.000163 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000011
-Basic GPU results match CPU.
-Basic GPU acceleration: 63.23x
-GPU shared time: 0.000041 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000011
-Shared GPU results match CPU.
-Shared GPU acceleration: 251.58x
-```
+<img width="689" height="259" alt="image" src="https://github.com/user-attachments/assets/2577924b-432c-45f7-873d-e0228c8aaadb" />
+
 
 #### Прямоугольные матрицы (64×256×128)
-```
-Matrix dimensions: A(64x256), B(256x128), C(64x128)
-Mode: all
-CPU time: 0.006019 seconds
-GPU basic time: 0.000164 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000015
-Basic GPU results match CPU.
-Basic GPU acceleration: 36.62x
-GPU shared time: 0.000045 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000015
-Shared GPU results match CPU.
-Shared GPU acceleration: 133.98x
-```
+<img width="649" height="231" alt="image" src="https://github.com/user-attachments/assets/190b74c8-cccc-450c-923e-23888bc8c29a" />
+
 
 #### Большие матрицы (1000×2000×1500)
-```
-Matrix dimensions: A(1000x2000), B(2000x1500), C(1000x1500)
-Mode: all
-CPU time: 13.2937 seconds
-GPU basic time: 0.004912 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000183
-Basic GPU results match CPU.
-Basic GPU acceleration: 2706.24x
-GPU shared time: 0.003605 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000183
-Shared GPU results match CPU.
-Shared GPU acceleration: 3687.46x
-```
+<img width="654" height="231" alt="image" src="https://github.com/user-attachments/assets/fbcb4570-c975-4834-9b81-bd7438f4445d" />
+
 
 #### Квадратные матрицы по умолчанию (1024×1024)
-```
-Matrix dimensions: A(1024x1024), B(1024x1024), C(1024x1024)
-Mode: all
-CPU time: 3.51235 seconds
-GPU basic time: 0.001606 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000092
-Basic GPU results match CPU.
-Basic GPU acceleration: 2187.13x
-GPU shared time: 0.001288 seconds
-All elements match! Max. diff(eps 1e-3f): 0.000092
-Shared GPU results match CPU.
-Shared GPU acceleration: 2726.57x
-```
+<img width="556" height="233" alt="image" src="https://github.com/user-attachments/assets/768aefb4-02bb-4503-b932-39f63dc33fc6" />
+
 
 ## Замечания
 - Оптимизированная версия (shared memory) даёт заметное ускорение на матрицах:
@@ -120,10 +65,10 @@ Shared GPU acceleration: 2726.57x
 | Размер матриц          | Коэффициент (shared быстрее basic в N раз) |
 |-----------------------|--------------------------------------------|
 | 4×4×4                 | ≈4.00x                                     |
-| 100×200×300           | ≈3.98x                                     |
-| 64×256×128            | ≈3.66x                                     |
-| 1000×2000×1500        | ≈1.36x                                     |
-| 1024×1024             | ≈1.25x                                     |
+| 100×200×300           | ≈3.56x                                     |
+| 64×256×128            | ≈3.70x                                     |
+| 1000×2000×1500        | ≈1.48x                                     |
+| 1024×1024             | ≈1.7x                                     |
 
 - Для малых матриц GPU-версии медленнее CPU из-за накладных расходов на запуск ядра и копирование данных.
 - Сравнение результатов выполняется с epsilon = 1e-3f, что учитывает накопленные ошибки округления в арифметике одинарной точности (float). 
