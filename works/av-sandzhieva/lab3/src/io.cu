@@ -72,8 +72,12 @@ unsigned char* readBMP(const char* filename, int* width, int* height)
         return nullptr;
     }
 
-    *width = *(int*)&header[18];
-    *height = *(int*)&header[22];
+    int data_offset;
+    memcpy(&data_offset, &header[10], sizeof(int));
+
+    memcpy(width, &header[18], sizeof(int));
+    memcpy(height, &header[22], sizeof(int));
+
     if (*(short*)&header[28] != 24) {
         fprintf(stderr, "Only 24-bit BMP supported\n");
         fclose(file);
@@ -130,13 +134,19 @@ void writeBMP(const char* filename, unsigned char* data, int width, int height)
 
     unsigned char header[54] = {0};
     header[0] = 'B'; header[1] = 'M';
-    *(int*)&header[2] = file_size;
-    *(int*)&header[10] = 54;
-    *(int*)&header[14] = 40;
-    *(int*)&header[18] = width;
-    *(int*)&header[22] = height;
-    header[26] = 1;
-    header[28] = 24;
+
+    int offset = 54;
+    int info_size = 40;
+    short planes = 1;
+    short bits = 24;
+
+    memcpy(&header[2], &file_size, sizeof(int));
+    memcpy(&header[10], &offset, sizeof(int));
+    memcpy(&header[14], &info_size, sizeof(int));
+    memcpy(&header[18], &width, sizeof(int));
+    memcpy(&header[22], &height, sizeof(int));
+    memcpy(&header[26], &planes, sizeof(short));
+    memcpy(&header[28], &bits, sizeof(short));
 
     fwrite(header, 1, 54, file);
 
