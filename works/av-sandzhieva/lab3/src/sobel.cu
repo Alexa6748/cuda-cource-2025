@@ -5,7 +5,7 @@ __device__ __forceinline__ int clamp_pixel_index(int val, int max_val) {
     return max(0, min(val, max_val - 1));
 }
 
-__global__ void sobelFilter(unsigned char* input, unsigned char* output, int width, int height)
+__global__ void sobelFilter(cudaTextureObject_t tex_input, unsigned char* output, int width, int height)
 {
     __shared__ unsigned char shared_tile[TILE_SIZE][TILE_SIZE+1];
 
