@@ -90,6 +90,7 @@ int main(int argc, char** argv)
 
     CUDA_CHECK(cudaEventDestroy(start_event));
     CUDA_CHECK(cudaEventDestroy(stop_event));
+    CUDA_CHECK(cudaDestroyTextureObject(tex_input));
     CUDA_CHECK(cudaFree(dev_input));
     CUDA_CHECK(cudaFree(dev_output));
     free(host_input);
