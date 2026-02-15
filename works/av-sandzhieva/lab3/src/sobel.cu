@@ -21,7 +21,7 @@ __global__ void sobelFilter(cudaTextureObject_t tex_input, unsigned char* output
     int local_row = ty + 1;
 
     if (col < width && row < height) {
-        shared_tile[local_row][local_col] = input[row * width + col];
+        shared_tile[local_row][local_col] = tex1Dfetch<unsigned char>(tex_input, row * width + col);
     } else {
         shared_tile[local_row][local_col] = 0;
     }
@@ -30,46 +30,46 @@ __global__ void sobelFilter(cudaTextureObject_t tex_input, unsigned char* output
     if (tx == 0) {
         int cy = clamp_pixel_index(row, height);
         int left = clamp_pixel_index(col - 1, width);
-        shared_tile[local_row][local_col - 1] = input[cy * width + left];
+        shared_tile[local_row][local_col - 1] = tex1Dfetch<unsigned char>(tex_input, cy * width + left);
     }
     if (tx == BLOCK_SIZE - 1) {
         int cy = clamp_pixel_index(row, height);
         int right = clamp_pixel_index(col + 1, width);
-        shared_tile[local_row][local_col + 1] = input[cy * width + right];
+        shared_tile[local_row][local_col + 1] = tex1Dfetch<unsigned char>(tex_input, cy * width + right);
     }
 
     // Вертикальные гало
     if (ty == 0) {
         int top = clamp_pixel_index(row - 1, height);
         int cx = clamp_pixel_index(col, width);
-        shared_tile[local_row - 1][local_col] = input[top * width + cx];
+        shared_tile[local_row - 1][local_col] = tex1Dfetch<unsigned char>(tex_input, top * width + cx);
     }
     if (ty == BLOCK_SIZE - 1) {
         int bottom = clamp_pixel_index(row + 1, height);
         int cx = clamp_pixel_index(col, width);
-        shared_tile[local_row + 1][local_col] = input[bottom * width + cx];
+        shared_tile[local_row + 1][local_col] = tex1Dfetch<unsigned char>(tex_input, bottom * width + cx);
     }
 
     // Углы
     if (tx == 0 && ty == 0) {
         int top  = clamp_pixel_index(row - 1, height);
         int left = clamp_pixel_index(col - 1, width);
-        shared_tile[local_row - 1][local_col - 1] = input[top * width + left];
+        shared_tile[local_row - 1][local_col - 1] = tex1Dfetch<unsigned char>(tex_input, top * width + left);
     }
     if (tx == BLOCK_SIZE - 1 && ty == 0) {
         int top   = clamp_pixel_index(row - 1, height);
         int right = clamp_pixel_index(col + 1, width);
-        shared_tile[local_row - 1][local_col + 1] = input[top * width + right];
+        shared_tile[local_row - 1][local_col + 1] = tex1Dfetch<unsigned char>(tex_input, top * width + right);
     }
     if (tx == 0 && ty == BLOCK_SIZE - 1) {
         int bottom = clamp_pixel_index(row + 1, height);
         int left   = clamp_pixel_index(col - 1, width);
-        shared_tile[local_row + 1][local_col - 1] = input[bottom * width + left];
+        shared_tile[local_row + 1][local_col - 1] = tex1Dfetch<unsigned char>(tex_input, bottom * width + left);
     }
     if (tx == BLOCK_SIZE - 1 && ty == BLOCK_SIZE - 1) {
         int bottom = clamp_pixel_index(row + 1, height);
         int right  = clamp_pixel_index(col + 1, width);
-        shared_tile[local_row + 1][local_col + 1] = input[bottom * width + right];
+        shared_tile[local_row + 1][local_col + 1] = tex1Dfetch<unsigned char>(tex_input, bottom * width + right);
     }
 
     __syncthreads();
