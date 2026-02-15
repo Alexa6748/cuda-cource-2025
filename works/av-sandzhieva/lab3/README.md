@@ -57,12 +57,19 @@ make
 Результат Собеля:  
 ![Результат Собеля](images/House2.bmp)
 
+Результат Собеля после замены clamp на max/min:  
+![Результат Собеля](images/House3.bmp)
+
+
 **Otpusk.pgm**  
 Исходное:  
 ![Отпуск](images/otpusk.pgm)
 
 Результат:  
 ![Результат Собеля](images/otpusk2.pgm)
+
+Результат Собеля после замены clamp на max/min:  
+![Результат Собеля](images/otpusk3.pgm)
 
 **Tiffany.bmp**  
 Исходное:  
@@ -71,6 +78,9 @@ make
 Результат:  
 ![Результат Собеля](images/Tiffany2.bmp)
 
+Результат Собеля после замены clamp на max/min:  
+![Результат Собеля](images/Tiffany3.bmp)
+
 **Cat.bmp**  
 Исходное:  
 ![Кошка](images/cat.bmp)
@@ -78,12 +88,18 @@ make
 Результат:  
 ![Результат Собеля](images/cat2.bmp)
 
+Результат Собеля после замены clamp на max/min:  
+![Результат Собеля](images/cat3.bmp)
+
 **Wallpaper.bmp** 
 Исходное:  
 ![Wallpaper](images/wallpaper.bmp)
 
 Результат:  
 ![Результат Собеля](images/wallpaper2.bmp)
+
+Результат Собеля после замены clamp на max/min:  
+![Результат Собеля](images//wallpaper3.bmp)
 
 ## Выводы
 - Использование shared memory снижает количество обращений к глобальной памяти.
