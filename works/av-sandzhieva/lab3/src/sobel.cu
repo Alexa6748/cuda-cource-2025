@@ -16,50 +16,56 @@ __global__ void sobelFilter(unsigned char* input, unsigned char* output, int wid
     int local_col = tx + 1;
     int local_row = ty + 1;
 
-    auto clamp = [](int val, int max_val) -> int {
-        return (val < 0 ? 0 : (val >= max_val ? max_val - 1 : val));
-    };
-
     if (col < width && row < height) {
         shared_tile[local_row][local_col] = input[row * width + col];
     } else {
         shared_tile[local_row][local_col] = 0;
     }
 
-    int cx = clamp(col, width);
-    int cy = clamp(row, height);
 
     if (tx == 0) {
-        int left = clamp(col - 1, width);
+        int cy = max(0, min(row, height - 1));
+        int left = max(0, min(col - 1, width - 1));
         shared_tile[local_row][local_col - 1] = input[cy * width + left];
     }
     if (tx == BLOCK_SIZE - 1) {
-        int right = clamp(col + 1, width);
+        int cy = max(0, min(row, height - 1));
+        int right = max(0, min(col + 1, width - 1));
         shared_tile[local_row][local_col + 1] = input[cy * width + right];
     }
 
     // Вертикальные гало
     if (ty == 0) {
-        int top = clamp(row - 1, height);
+        int top = max(0, min(row - 1, height - 1));
+        int cx = max(0, min(col, width - 1));
         shared_tile[local_row - 1][local_col] = input[top * width + cx];
     }
     if (ty == BLOCK_SIZE - 1) {
-        int bottom = clamp(row + 1, height);
+        int bottom = max(0, min(row + 1, height - 1));
+        int cx = max(0, min(col, width - 1));
         shared_tile[local_row + 1][local_col] = input[bottom * width + cx];
     }
 
     // Углы
     if (tx == 0 && ty == 0) {
-        shared_tile[local_row - 1][local_col - 1] = input[clamp(row - 1, height) * width + clamp(col - 1, width)];
+        int top = max(0, min(row - 1, height - 1));
+        int left = max(0, min(col - 1, width - 1));
+        shared_tile[local_row - 1][local_col - 1] = input[top * width + left];
     }
     if (tx == BLOCK_SIZE - 1 && ty == 0) {
-        shared_tile[local_row - 1][local_col + 1] = input[clamp(row - 1, height) * width + clamp(col + 1, width)];
+        int top = max(0, min(row - 1, height - 1));
+        int right = max(0, min(col + 1, width - 1));
+        shared_tile[local_row - 1][local_col + 1] = input[top * width + right];
     }
     if (tx == 0 && ty == BLOCK_SIZE - 1) {
-        shared_tile[local_row + 1][local_col - 1] = input[clamp(row + 1, height) * width + clamp(col - 1, width)];
+        int bottom = max(0, min(row + 1, height - 1));
+        int left = max(0, min(col - 1, width - 1));
+        shared_tile[local_row + 1][local_col - 1] = input[bottom * width + left];
     }
     if (tx == BLOCK_SIZE - 1 && ty == BLOCK_SIZE - 1) {
-        shared_tile[local_row + 1][local_col + 1] = input[clamp(row + 1, height) * width + clamp(col + 1, width)];
+        int bottom = max(0, min(row + 1, height - 1));
+        int right = max(0, min(col + 1, width - 1));
+        shared_tile[local_row + 1][local_col + 1] = input[bottom * width + right];
     }
 
     __syncthreads();
