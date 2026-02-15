@@ -20,10 +20,14 @@ __global__ void sobelFilter(unsigned char* input, unsigned char* output, int wid
         return (val < 0 ? 0 : (val >= max_val ? max_val - 1 : val));
     };
 
+    if (col < width && row < height) {
+        shared_tile[local_row][local_col] = input[row * width + col];
+    } else {
+        shared_tile[local_row][local_col] = 0;
+    }
+
     int cx = clamp(col, width);
     int cy = clamp(row, height);
-
-    shared_tile[local_row][local_col] = input[cy * width + cx];
 
     if (tx == 0) {
         int left = clamp(col - 1, width);
