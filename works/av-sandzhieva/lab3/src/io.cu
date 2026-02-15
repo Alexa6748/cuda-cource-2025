@@ -94,7 +94,7 @@ unsigned char* readBMP(const char* filename, int* width, int* height)
         return nullptr;
     }
 
-    fseek(file, *(int*)&header[10], SEEK_SET);
+    fseek(file, data_offset, SEEK_SET);
     if (fread(rgb, 1, row_padded * *height, file) != static_cast<size_t>(row_padded * *height)) {
         fprintf(stderr, "Failed to read BMP pixels\n");
         free(rgb);
