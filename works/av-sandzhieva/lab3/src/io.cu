@@ -78,7 +78,10 @@ unsigned char* readBMP(const char* filename, int* width, int* height)
     memcpy(width, &header[18], sizeof(int));
     memcpy(height, &header[22], sizeof(int));
 
-    if (*(short*)&header[28] != 24) {
+    
+    short bpp;
+    memcpy(&bpp, &header[28], sizeof(short));
+    if (bpp != 24) {
         fprintf(stderr, "Only 24-bit BMP supported\n");
         fclose(file);
         return nullptr;
