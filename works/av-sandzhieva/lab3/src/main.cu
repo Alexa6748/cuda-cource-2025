@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     CUDA_CHECK(cudaEventCreate(&stop_event));
     CUDA_CHECK(cudaEventRecord(start_event));
 
-    sobelFilter<<<grid_dim, block_dim>>>(dev_input, dev_output, w, h);
+    sobelFilter<<<grid_dim, block_dim>>>(tex_input, dev_output, w, h);
     CUDA_CHECK(cudaGetLastError());
 
     CUDA_CHECK(cudaEventRecord(stop_event));
