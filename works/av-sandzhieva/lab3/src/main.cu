@@ -33,6 +33,7 @@ int main(int argc, char** argv)
     unsigned char* host_output = static_cast<unsigned char*>(malloc(data_size));
 
     unsigned char *dev_input = nullptr, *dev_output = nullptr;
+    cudaTextureObject_t tex_input = 0;
     CUDA_CHECK(cudaMalloc(&dev_input, data_size));
     CUDA_CHECK(cudaMalloc(&dev_output, data_size));
 
