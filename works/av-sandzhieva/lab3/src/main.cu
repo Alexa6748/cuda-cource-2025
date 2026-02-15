@@ -39,6 +39,18 @@ int main(int argc, char** argv)
 
     CUDA_CHECK(cudaMemcpy(dev_input, host_input, data_size, cudaMemcpyHostToDevice));
 
+    cudaResourceDesc resDesc;
+    memset(&resDesc, 0, sizeof(resDesc));
+    resDesc.resType = cudaResourceTypeLinear;
+    resDesc.res.linear.devPtr = dev_input;
+    resDesc.res.linear.desc = cudaCreateChannelDesc<unsigned char>();
+    resDesc.res.linear.sizeInBytes = data_size;
+
+    cudaTextureDesc texDesc;
+    memset(&texDesc, 0, sizeof(texDesc));
+    texDesc.readMode = cudaReadModeElementType; 
+    CUDA_CHECK(cudaCreateTextureObject(&tex_input, &resDesc, &texDesc, nullptr));
+
     dim3 block_dim(BLOCK_SIZE, BLOCK_SIZE);
     dim3 grid_dim((w + BLOCK_SIZE - 1) / BLOCK_SIZE,
                   (h + BLOCK_SIZE - 1) / BLOCK_SIZE);
