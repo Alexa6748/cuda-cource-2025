@@ -2,7 +2,10 @@
 #include "../include/gpu_radix_sort.h"
 
 template<typename T>
-void run_test(size_t n, const char* name) {
+void run_test(size_t n, const char* name,
+              T* d_temp,                    // маллок
+              unsigned int* d_digitsPerBlock,
+              unsigned int* d_totalCountPerDigit) {
     printf("\n %s | %zu элементов \n", name, n);
 
     std::vector<T> h_in(n);
@@ -29,7 +32,7 @@ void run_test(size_t n, const char* name) {
     CUDA_CHECK(cudaEventCreate(&stop));
 
     CUDA_CHECK(cudaEventRecord(start));
-    gpu_radix_sort(d_out, d_in, n);
+    gpu_radix_sort(d_out, d_in, d_temp, d_digitsPerBlock, d_totalCountPerDigit, n);
     CUDA_CHECK(cudaEventRecord(stop));
     CUDA_CHECK(cudaEventSynchronize(stop));
     float radix_ms = 0.0f;
@@ -62,11 +65,28 @@ void run_test(size_t n, const char* name) {
 int main() {
     printf("Lab 4: Radix Sort on CUDA\n");
 
+    const size_t MAX_N = 2000000;
+    const unsigned int MAX_BLOCKS = (MAX_N + BLOCK_SIZE - 1) / BLOCK_SIZE;
+
+    unsigned int *d_digitsPerBlock = nullptr;
+    unsigned int *d_totalCountPerDigit = nullptr;
+    uint64_t *d_temp = nullptr;
+
+    CUDA_CHECK(cudaMalloc(&d_digitsPerBlock, RADIX * MAX_BLOCKS * sizeof(unsigned int)));
+    CUDA_CHECK(cudaMalloc(&d_totalCountPerDigit, RADIX * sizeof(unsigned int)));
+    CUDA_CHECK(cudaMalloc(&d_temp, MAX_N * sizeof(uint64_t)));
+
     size_t sizes[] = {100000, 500000, 1000000, 2000000};
     for (int i = 0; i < 4; i++) {
-        run_test<int32_t>(sizes[i], "int32_t");
-        run_test<int64_t>(sizes[i], "int64_t");
+        run_test<int32_t>(sizes[i], "int32_t", reinterpret_cast<int32_t*>(d_temp),
+                          d_digitsPerBlock, d_totalCountPerDigit);
+        run_test<int64_t>(sizes[i], "int64_t", reinterpret_cast<int64_t*>(d_temp),
+                          d_digitsPerBlock, d_totalCountPerDigit);
     }
+
+    CUDA_CHECK(cudaFree(d_temp));
+    CUDA_CHECK(cudaFree(d_digitsPerBlock));
+    CUDA_CHECK(cudaFree(d_totalCountPerDigit));
+
     return 0;
 }
-
