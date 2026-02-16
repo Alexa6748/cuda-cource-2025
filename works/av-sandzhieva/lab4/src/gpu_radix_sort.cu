@@ -231,7 +231,9 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
     T* d_temp = nullptr;
     CUDA_CHECK(cudaMalloc(&d_temp, n * sizeof(T)));
 
-    flip_msb<<<num_blocks, BLOCK_SIZE>>>(d_in, n);
+    CUDA_CHECK(cudaMemcpy(d_temp, d_in, n * sizeof(T), cudaMemcpyDeviceToDevice));
+
+    flip_msb<<<num_blocks, BLOCK_SIZE>>>(d_temp, n);
     CUDA_CHECK(cudaGetLastError());
     
     unsigned int scan_threads = 32;
@@ -239,7 +241,7 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
     scan_threads = min(scan_threads, 1024u);
     size_t scan_smem = 2 * scan_threads * sizeof(unsigned int);
 
-    T *src = d_in, *dst = d_temp;
+    T *src = d_temp, *dst = d_out;
 
     for (unsigned int p = 0; p < passes; ++p) {
         unsigned int shift = p * BITS_PER_PASS;
@@ -260,7 +262,9 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
         T* tmp = src; src = dst; dst = tmp;
     }
 
-    CUDA_CHECK(cudaMemcpy(d_out, src, n * sizeof(T), cudaMemcpyDeviceToDevice));
+    if (src != d_out) {
+        CUDA_CHECK(cudaMemcpy(d_out, src, n * sizeof(T), cudaMemcpyDeviceToDevice));
+    }
     flip_msb<<<num_blocks, BLOCK_SIZE>>>(d_out, n);
     CUDA_CHECK(cudaGetLastError());
 
