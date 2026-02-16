@@ -10,7 +10,6 @@
 #include <vector>
 #include <chrono>
 #include <algorithm>
-#include <cstdio>
 
 #define CUDA_CHECK(call) \
     do { \
