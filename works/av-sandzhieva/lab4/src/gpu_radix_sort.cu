@@ -6,7 +6,7 @@ __global__ void flip_msb(T* data, size_t n) {
     size_t i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= n) return;
 
-    if (sizeof(T) == 4)
+    if constexpr (sizeof(T) == 4)
         reinterpret_cast<uint32_t*>(data)[i] ^= 0x80000000u;
     else
         reinterpret_cast<uint64_t*>(data)[i] ^= 0x8000000000000000ull;
@@ -14,7 +14,7 @@ __global__ void flip_msb(T* data, size_t n) {
 
 template<typename T>
 __device__ __forceinline__ unsigned int get_digit(T x, unsigned int shift) {
-    if (sizeof(T) == 4)
+    if constexpr (sizeof(T) == 4)
         return (reinterpret_cast<const uint32_t&>(x) >> shift) & 0xFFu;
     else
         return (reinterpret_cast<const uint64_t&>(x) >> shift) & 0xFFu;
