@@ -219,6 +219,11 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
     const unsigned int passes = (sizeof(T) * 8) / BITS_PER_PASS;
     const unsigned int num_blocks = (n + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
+    if (num_blocks > 2048) {
+        printf("Error: n too large for single-block scan\n");
+        return; 
+    }
+
     unsigned int *d_digitsPerBlock = nullptr;
     unsigned int *d_totalCountPerDigit = nullptr;
 
