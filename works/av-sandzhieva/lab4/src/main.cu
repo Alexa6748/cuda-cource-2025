@@ -76,6 +76,23 @@ int main() {
     CUDA_CHECK(cudaMalloc(&d_totalCountPerDigit, RADIX * sizeof(unsigned int)));
     CUDA_CHECK(cudaMalloc(&d_temp, MAX_N * sizeof(uint64_t)));
 
+    {
+        size_t warm_n = 100000;
+        int32_t *d_warm_in = nullptr, *d_warm_out = nullptr;
+        CUDA_CHECK(cudaMalloc(&d_warm_in, warm_n * sizeof(int32_t)));
+        CUDA_CHECK(cudaMalloc(&d_warm_out, warm_n * sizeof(int32_t)));
+
+        std::vector<int32_t> h_warm(warm_n, 0); 
+        CUDA_CHECK(cudaMemcpy(d_warm_in, h_warm.data(), warm_n * sizeof(int32_t), cudaMemcpyHostToDevice));
+
+        gpu_radix_sort(d_warm_out, d_warm_in,
+                       reinterpret_cast<int32_t*>(d_temp),
+                       d_digitsPerBlock, d_totalCountPerDigit, warm_n);
+
+        CUDA_CHECK(cudaFree(d_warm_in));
+        CUDA_CHECK(cudaFree(d_warm_out));
+    }
+
     size_t sizes[] = {100000, 500000, 1000000, 2000000};
     for (int i = 0; i < 4; i++) {
         run_test<int32_t>(sizes[i], "int32_t", reinterpret_cast<int32_t*>(d_temp),
