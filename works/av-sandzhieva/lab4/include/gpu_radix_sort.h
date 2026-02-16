@@ -11,6 +11,9 @@
 
 
 template<typename T>
-void gpu_radix_sort(T* d_out, T* d_in, size_t n);
+void gpu_radix_sort(T* d_out, T* d_in, T* d_temp,
+                    unsigned int* d_digitsPerBlock,
+                    unsigned int* d_totalCountPerDigit,
+                    size_t n);
 
 #endif // GPU_RADIX_SORT_H
