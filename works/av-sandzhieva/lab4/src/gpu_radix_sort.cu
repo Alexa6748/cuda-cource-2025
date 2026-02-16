@@ -213,7 +213,11 @@ __global__ void scatter(const T* in, T* out,
 
 
 template<typename T>
-void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
+void gpu_radix_sort(T* d_out, T* d_in, T* d_temp,
+                    unsigned int* d_digitsPerBlock,
+                    unsigned int* d_totalCountPerDigit,
+                    size_t n) 
+{
     if (n == 0) return;
 
     const unsigned int passes = (sizeof(T) * 8) / BITS_PER_PASS;
@@ -223,18 +227,6 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
         printf("Error: n too large for single-block scan\n");
         return; 
     }
-
-    unsigned int *d_digitsPerBlock = nullptr;
-    unsigned int *d_totalCountPerDigit = nullptr;
-
-    size_t sizeHist = RADIX * num_blocks * sizeof(unsigned int);
-    size_t sizeTotal = RADIX * sizeof(unsigned int);
-
-    CUDA_CHECK(cudaMalloc(&d_digitsPerBlock, sizeHist));
-    CUDA_CHECK(cudaMalloc(&d_totalCountPerDigit, sizeTotal));
-
-    T* d_temp = nullptr;
-    CUDA_CHECK(cudaMalloc(&d_temp, n * sizeof(T)));
 
     CUDA_CHECK(cudaMemcpy(d_temp, d_in, n * sizeof(T), cudaMemcpyDeviceToDevice));
 
@@ -272,11 +264,7 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
     }
     flip_msb<<<num_blocks, BLOCK_SIZE>>>(d_out, n);
     CUDA_CHECK(cudaGetLastError());
-
-    CUDA_CHECK(cudaFree(d_temp));
-    CUDA_CHECK(cudaFree(d_digitsPerBlock));
-    CUDA_CHECK(cudaFree(d_totalCountPerDigit));
 }
 
-template void gpu_radix_sort<int32_t>(int32_t*, int32_t*, size_t);
-template void gpu_radix_sort<int64_t>(int64_t*, int64_t*, size_t);
+template void gpu_radix_sort<int32_t>(int32_t*, int32_t*, int32_t*, unsigned int*, unsigned int*, size_t);
+template void gpu_radix_sort<int64_t>(int64_t*, int64_t*, int64_t*, unsigned int*, unsigned int*, size_t);
