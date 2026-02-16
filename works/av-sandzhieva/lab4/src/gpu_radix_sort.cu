@@ -232,7 +232,7 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
     CUDA_CHECK(cudaMalloc(&d_temp, n * sizeof(T)));
 
     flip_msb<<<num_blocks, BLOCK_SIZE>>>(d_in, n);
-
+    CUDA_CHECK(cudaGetLastError());
     
     unsigned int scan_threads = 32;
     while (scan_threads < num_blocks) scan_threads *= 2;
@@ -262,6 +262,7 @@ void gpu_radix_sort(T* d_out, T* d_in, size_t n) {
 
     CUDA_CHECK(cudaMemcpy(d_out, src, n * sizeof(T), cudaMemcpyDeviceToDevice));
     flip_msb<<<num_blocks, BLOCK_SIZE>>>(d_out, n);
+    CUDA_CHECK(cudaGetLastError());
 
     CUDA_CHECK(cudaFree(d_temp));
     CUDA_CHECK(cudaFree(d_digitsPerBlock));
