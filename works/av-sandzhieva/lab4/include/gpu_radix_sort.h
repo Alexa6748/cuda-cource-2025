@@ -8,8 +8,7 @@
 #define WARPS_PER_BLOCK    (BLOCK_SIZE / WARP_SIZE)
 #define RADIX              256
 #define BITS_PER_PASS      8
-#define LOG_BANKS          5
-#define OFFSET(idx)        ((idx) >> LOG_BANKS)
+
 
 template<typename T>
 void gpu_radix_sort(T* d_out, T* d_in, size_t n);
